@@ -15,3 +15,11 @@ used as input in the settings of your games.
 Third party components:
 * SDL 2 - https://www.libsdl.org/ (zlib License)
 * vJoy - http://vjoystick.sourceforge.net/ (Public Domain)
+
+How to compile:
+
+The software is currently only available for 64bit Windows operating systems
+and indented to be compiled with Microsoft Visual Studio 2010. Newer MSVC
+should also work after upgrading the solution. The required external libraries
+SDL and vJoy are included. However, the vJoy driver must be installed
+separately. The see the vJoy website for details.
