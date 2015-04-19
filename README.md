@@ -13,5 +13,5 @@ library called vJoy. The buttons of the virtual device should then be
 used as input in the settings of your games.
 
 Third party components:
-SDL 2 - https://www.libsdl.org/ (zlib License)
-vJoy - http://vjoystick.sourceforge.net/ (Public Domain)
+* SDL 2 - https://www.libsdl.org/ (zlib License)
+* vJoy - http://vjoystick.sourceforge.net/ (Public Domain)
