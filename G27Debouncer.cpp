@@ -6,11 +6,11 @@
 #include <SDL.h>
 #include <vjoyinterface.h>
 
-#define VIRTUAL_DURATION	300
-#define VIRTUAL_GAP			400
-#define VIRTUAL_DELAY		5000
-#define VIRTUAL_JOYSTICK_ID	1u
-#define SDL_POLLING_TIME	10
+int buttonPressDuration = 300;
+int buttonPressGap = 400;
+int fakePressDelay = 5000;
+int sdlPollingDelay = 10;
+int virtualJoystickId = 1;
 
 using namespace std;
 
@@ -26,6 +26,28 @@ void exitWithErrorMsg(const char* errorMsg)
 {
 	cout << "FATAL ERROR: " << errorMsg << endl;
 	exit(EXIT_FAILURE);
+}
+
+void readSettings()
+{
+	// Get full path to this executable
+	char path[MAX_PATH];
+	if (GetModuleFileName(NULL, path, sizeof(path)) <= 0)
+		exitWithErrorMsg("Could not read .exe path!");
+
+	// Replace .exe with .ini
+	strcpy(path + strlen(path) - 3, "ini");
+
+	buttonPressDuration = GetPrivateProfileInt("timing", "button_press_duration", buttonPressDuration, path);
+	cout << "SETTING: button_press_duration = " << buttonPressDuration << endl;
+	buttonPressGap = GetPrivateProfileInt("timing", "button_press_gap", buttonPressGap, path);
+	cout << "SETTING: button_press_gap = " << buttonPressGap << endl;
+	fakePressDelay = GetPrivateProfileInt("timing", "fake_press_delay", fakePressDelay, path);
+	cout << "SETTING: fake_press_delay = " << fakePressDelay << endl;
+	sdlPollingDelay = GetPrivateProfileInt("timing", "sdl_polling_delay", sdlPollingDelay, path);
+	cout << "SETTING: sdl_polling_delay = " << sdlPollingDelay << endl;
+	virtualJoystickId = GetPrivateProfileInt("vjoy", "virtual_joystick_id", virtualJoystickId, path);
+	cout << "SETTING: virtual_joystick_id = " << virtualJoystickId << endl;
 }
 
 SDL_Joystick* getG27Joystick()
@@ -94,8 +116,11 @@ UINT getVirtualJoystick(UINT id)
 
 int main(int argc, char* argv[])
 {
+	cout << "INFO: Starting Logitech G27 Software Debouncer" << endl;
+	readSettings();
+
 	SDL_Joystick* g27 = getG27Joystick();
-	UINT vJoy = getVirtualJoystick(VIRTUAL_JOYSTICK_ID);
+	UINT vJoy = getVirtualJoystick(virtualJoystickId);
 
 	bool btnRight = false, btnLeft = false;
 	bool virtualRightOn = false, virtualLeftOn = false;
@@ -107,16 +132,16 @@ int main(int argc, char* argv[])
 		Uint32 now = SDL_GetTicks();
 
 		if (checkForKeyIsDown(VK_F6)) {
-			SDL_Delay(VIRTUAL_DELAY);
+			SDL_Delay(fakePressDelay);
 			SetBtn(TRUE, vJoy, 1);
-			SDL_Delay(VIRTUAL_DURATION);
+			SDL_Delay(buttonPressDuration);
 			SetBtn(FALSE, vJoy, 1);
 		}
 
 		if (checkForKeyIsDown(VK_F5)) {
-			SDL_Delay(VIRTUAL_DELAY);
+			SDL_Delay(fakePressDelay);
 			SetBtn(TRUE, vJoy, 2);
-			SDL_Delay(VIRTUAL_DURATION);
+			SDL_Delay(buttonPressDuration);
 			SetBtn(FALSE, vJoy, 2);
 		}
 
@@ -125,7 +150,7 @@ int main(int argc, char* argv[])
 			btnRight = right;
 			cout << "INFO: Right hardware button changed to " << btnRight << endl;
 			Uint32 sinceLastStart = now - virtualRightStart;
-			if (sinceLastStart > VIRTUAL_GAP && btnRight) {
+			if (sinceLastStart > buttonPressGap && btnRight) {
 				virtualRightOn = true;
 				virtualRightStart = now;
 				SetBtn(TRUE, vJoy, 1);
@@ -137,24 +162,24 @@ int main(int argc, char* argv[])
 			btnLeft = left;
 			cout << "INFO: Left hardware button changed to " << btnLeft << endl;
 			Uint32 sinceLastStart = now - virtualLeftStart;
-			if (sinceLastStart > VIRTUAL_GAP && btnLeft) {
+			if (sinceLastStart > buttonPressGap && btnLeft) {
 				virtualLeftOn = true;
 				virtualLeftStart = now;
 				SetBtn(TRUE, vJoy, 2);
 			}
 		}
 
-		if (virtualRightOn && now - virtualRightStart > VIRTUAL_DURATION) {
+		if (virtualRightOn && now - virtualRightStart > buttonPressDuration) {
 			virtualRightOn = false;
 			SetBtn(FALSE, vJoy, 1);
 		}
 
-		if (virtualLeftOn && now - virtualLeftStart > VIRTUAL_DURATION) {
+		if (virtualLeftOn && now - virtualLeftStart > buttonPressDuration) {
 			virtualLeftOn = false;
 			SetBtn(FALSE, vJoy, 2);
 		}
 
-		SDL_Delay(SDL_POLLING_TIME);
+		SDL_Delay(sdlPollingDelay);
 	}
 
 	SDL_JoystickClose(g27);

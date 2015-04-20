@@ -58,9 +58,11 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;vJoyInterface.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PostBuildEvent />
     <PostBuildEvent>
       <Command>xcopy /y /d  "$(ProjectDir)sdl\lib\SDL2.dll" "$(OutDir)"
-xcopy /y /d  "$(ProjectDir)vjoy\lib\vJoyInterface.dll" "$(OutDir)"</Command>
+xcopy /y /d  "$(ProjectDir)vjoy\lib\vJoyInterface.dll" "$(OutDir)"
+xcopy /y /d  "$(ProjectDir)G27Debouncer.ini" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -80,8 +82,9 @@ xcopy /y /d  "$(ProjectDir)vjoy\lib\vJoyInterface.dll" "$(OutDir)"</Command>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d  "$(ProjectDir)sdl\lib\*.dll" "$(OutDir)"
-xcopy /y /d  "$(ProjectDir)vjoyl\lib\*.dll" "$(OutDir)"</Command>
+      <Command>xcopy /y /d  "$(ProjectDir)sdl\lib\SDL2.dll" "$(OutDir)"
+xcopy /y /d  "$(ProjectDir)vjoy\lib\vJoyInterface.dll" "$(OutDir)"
+xcopy /y /d  "$(ProjectDir)G27Debouncer.ini" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
