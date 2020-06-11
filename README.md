@@ -1,10 +1,10 @@
 Logitech G27 Software Debouncer
 
 This tool reads the shifting paddle state reported by the G27 Windows driver.
-It then filters the data and forwards it as output of a second virtual device.
+It then filters the signals and forwards them as output into a second virtual device.
 The two buttons of the virtual device can then be used as input in the settings
-of your games and report just one instead of many buttons clicks. Especially
-useful for slightly defect wheels and games without their own input filters.
+of your software and report just one instead of many buttons clicks. Especially
+useful for slightly defect wheels and games without own input filters.
 
 Motivation:
 
@@ -17,19 +17,19 @@ software solution. This repository contains the result.
 How to compile:
 
 The software is currently only available for 64bit Windows operating systems
-and indented to be compiled with Microsoft Visual Studio 2010. Newer MSVC
+and indented to be compiled with Microsoft Visual Studio 2019. Newer MSVC
 should also work after upgrading the solution. The required external libraries
 SDL and vJoy are included. However, the vJoy driver must be installed
 separately. See the vJoy website for more details.
 
 How to use:
 
-1. Compile with MSVC >= 2010
-2. Install the vJoy driver and set a device with at least two buttons
-3. Configure the software using the INI file (defaults should work)
+1. Compile with MSVC >= 2019
+2. Install the vJoy driver and make sure you have a device with at least two buttons
+3. Optional: Configure the debouncer using the INI file (defaults should work)
 4. Start the tool
 5. Start the game and use the F5/F6 keys to bind the virtual device buttons.
-   How it works: After pressing F5/F6 it will wait 5 seconds and then trigger
+   After pressing F5/F6 the debouncer will wait 5 seconds and then trigger
    the virtual left/right joystick button. If you just pull the shifting
    paddle to assign the button, it will most probably bind the original button
    instead of the virtual filtered one!
