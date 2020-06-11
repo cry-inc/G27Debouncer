@@ -6,11 +6,11 @@
 #include <SDL.h>
 #include <vjoyinterface.h>
 
-int buttonPressDuration = 300;
-int buttonPressGap = 400;
-int fakePressDelay = 5000;
-int sdlPollingDelay = 10;
-int virtualJoystickId = 1;
+Uint32 buttonPressDuration = 300;
+Uint32 buttonPressGap = 400;
+Uint32 fakePressDelay = 5000;
+Uint32 sdlPollingDelay = 10;
+Uint32 virtualJoystickId = 1;
 
 using namespace std;
 
@@ -36,7 +36,8 @@ void readSettings()
 		exitWithErrorMsg("Could not read .exe path!");
 
 	// Replace .exe with .ini
-	strcpy(path + strlen(path) - 3, "ini");
+	size_t pathLen = strlen(path);
+	strcpy_s(path + pathLen - 3, MAX_PATH - pathLen + 3, "ini");
 
 	buttonPressDuration = GetPrivateProfileInt("timing", "button_press_duration", buttonPressDuration, path);
 	cout << "SETTING: button_press_duration = " << buttonPressDuration << endl;
@@ -116,6 +117,9 @@ UINT getVirtualJoystick(UINT id)
 
 int main(int argc, char* argv[])
 {
+	(void)argc;
+	(void)argv;
+
 	cout << "INFO: Starting Logitech G27 Software Debouncer" << endl;
 	readSettings();
 
@@ -145,7 +149,7 @@ int main(int argc, char* argv[])
 			SetBtn(FALSE, vJoy, 2);
 		}
 
-		bool right = SDL_JoystickGetButton (g27, 4);
+		bool right = SDL_JoystickGetButton(g27, 4);
 		if (right != btnRight) {
 			btnRight = right;
 			cout << "INFO: Right hardware button changed to " << btnRight << endl;
