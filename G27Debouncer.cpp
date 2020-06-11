@@ -3,7 +3,10 @@
 #include <cassert>
 
 #include <windows.h>
+
 #include <SDL.h>
+
+#include <public.h>
 #include <vjoyinterface.h>
 
 Uint32 buttonPressDuration = 300;
@@ -61,13 +64,13 @@ SDL_Joystick* getG27Joystick()
 	if (switched)
 		exitWithErrorMsg("SDL could not enable manual joystick polling!");
 	
-	int joystickNumber = SDL_NumJoysticks();
-	cout << "INFO: SDL found " << joystickNumber << " joystick(s)" << endl;
-	if (joystickNumber < 1)
+	int joystickCount = SDL_NumJoysticks();
+	cout << "INFO: SDL found " << joystickCount << " joystick(s)" << endl;
+	if (joystickCount < 1)
 		exitWithErrorMsg("Could not find a joystick!");
 
-	for (int i=0; i<joystickNumber; ++i) {
-		SDL_Joystick* joystick = SDL_JoystickOpen(0);
+	for (int i=0; i<joystickCount; ++i) {
+		SDL_Joystick* joystick = SDL_JoystickOpen(i);
 		if (!joystick)
 			continue;
 		int buttonNumber = SDL_JoystickNumButtons(joystick);
